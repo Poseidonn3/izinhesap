@@ -85,6 +85,6 @@ struct MonthView: View {
     }
 }
     }
-git remote add origin <https://poseidonn3.github.io/Poseidonn3/>
+git remote add origin <https://poseidonn3.github.io/izinhesap/>
 git push -u origin main
     }
