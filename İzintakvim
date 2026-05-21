@@ -1,1 +1,87 @@
+```swift
+import SwiftUI
+
+// 1. Vardiya Veri Modeli
+enum ShiftType: String, CaseIterable {
+    case gunduz = "Gündüz"
+    case gece = "Gece"
+    case izin = "İzin"
+    
+    var color: Color {
+        switch self {
+        case .gunduz: return .green.opacity(0.6)
+        case .gece: return .yellow.opacity(0.6)
+        case .izin: return .red.opacity(0.6)
+        }
+    }
+}
+
+struct ShiftCalendarApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+
+struct ContentView: View {
+    // 2. Referans Ayarları
+    let referenceDate = Date(timeIntervalSince1970: 1778976000) // 15 Mayıs 2026
+    let cycle = [ShiftType.gunduz, .gunduz, .gece, .gece, .izin, .izin]
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 20) {
+                    ForEach(1...12, id: \.self) { month in
+                        MonthView(month: month)
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("2026 Takvimim")
+            .background(Color(UIColor.systemGroupedBackground))
+        }
+    }
+    
+    func getShift(for date: Date) -> ShiftType {
+        let diff = Calendar.current.dateComponents([.day], from: referenceDate, to: date).day ?? 0
+        let index = (3 + diff) % 6
+        return cycle[index < 0 ? index + 6 : index]
+    }
+}
+
+struct MonthView: View {
+    let month: Int
+    
+    var body: some View {
+        VStack {
+            Text(DateFormatter().monthSymbols[month - 1] + " 2026")
+                .font(.headline)
+                .padding(.bottom, 5)
+            
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
+                ForEach(1...31, id: \.self) { day in
+                    if let date = Calendar.current.date(from: DateComponents(year: 2026, month: month, day: day)) {
+                        VStack {
+                            Text("\(day)").font(.system(size: 10))
+                            Text(ContentView().getShift(for: date).rawValue.prefix(1))
+                                .font(.system(size: 8, weight: .bold))
+                        }
+                        .frame(height: 40)
+                        .frame(maxWidth: .infinity)
+                        .background(ContentView().getShift(for: date).color)
+                        .cornerRadius(8)
+                    }
+                }
+            }
+        }
+        .padding()
+        .background(Color(UIColor.secondarySystemGroupedBackground))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+    }
+}
+
+```
 
