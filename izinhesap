@@ -1,4 +1,4 @@
-```swift
+swift
 import SwiftUI
 
 // 1. Vardiya Veri Modeli
@@ -83,4 +83,3 @@ struct MonthView: View {
     }
 }
 
-```
